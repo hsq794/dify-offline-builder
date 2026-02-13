@@ -1,4 +1,4 @@
-name: Build Dify Offline Package
+name: Build Dify v1.8.0 Offline Package
 
 on:
   workflow_dispatch:
@@ -10,18 +10,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Pull Dify stable images
+      - name: Pull Dify v1.8.0 images
         run: |
-          echo "🔄 Pulling Dify stable images..."
+          echo "🔄 Pulling Dify v1.8.0 images..."
           docker pull redis:7-alpine
           docker pull postgres:15
-          docker pull ubuntu/squid:latest
-          docker pull langgenius/dify-api:latest
-          docker pull langgenius/dify-web:latest
-          docker pull busybox:1.38
-          docker pull langgenius/dify-sandbox:0.2.12
-          docker pull langgenius/dify-plugin-daemon:latest
-          docker pull semitechnologies/weaviate:1.19.0
+          docker pull semitechnologies/weaviate:1.23.5
+          docker pull langgenius/dify-api:1.8.0
+          docker pull langgenius/dify-web:1.8.0
+          docker pull langgenius/dify-sandbox:0.3.15
+          docker pull langgenius/dify-plugin-daemon:1.8.0
           echo "✅ All images pulled."
 
       - name: Save images as tar
@@ -29,13 +27,11 @@ jobs:
           mkdir -p dify-offline/images
           docker save redis:7-alpine -o dify-offline/images/redis.tar
           docker save postgres:15 -o dify-offline/images/postgres.tar
-          docker save ubuntu/squid:latest -o dify-offline/images/squid.tar
-          docker save langgenius/dify-api:latest -o dify-offline/images/dify-api.tar
-          docker save langgenius/dify-web:latest -o dify-offline/images/dify-web.tar
-          docker save busybox:1.38 -o dify-offline/images/busybox.tar
-          docker save langgenius/dify-sandbox:0.2.12 -o dify-offline/images/dify-sandbox.tar
-          docker save langgenius/dify-plugin-daemon:latest -o dify-offline/images/dify-plugin-daemon.tar
-          docker save semitechnologies/weaviate:1.19.0 -o dify-offline/images/weaviate.tar
+          docker save semitechnologies/weaviate:1.23.5 -o dify-offline/images/weaviate.tar
+          docker save langgenius/dify-api:1.8.0 -o dify-offline/images/dify-api.tar
+          docker save langgenius/dify-web:1.8.0 -o dify-offline/images/dify-web.tar
+          docker save langgenius/dify-sandbox:0.3.15 -o dify-offline/images/dify-sandbox.tar
+          docker save langgenius/dify-plugin-daemon:1.8.0 -o dify-offline/images/dify-plugin-daemon.tar
 
       - name: Copy config files from repo
         run: |

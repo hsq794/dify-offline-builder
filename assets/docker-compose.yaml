@@ -26,18 +26,8 @@ services:
     networks:
       - dify-network
 
-  squid:
-    image: ubuntu/squid:latest
-    restart: always
-    ports:
-      - "3128:3128"
-    volumes:
-      - ./data/squid:/etc/squid
-    networks:
-      - dify-network
-
   weaviate:
-    image: semitechnologies/weaviate:1.19.0
+    image: semitechnologies/weaviate:1.23.5
     restart: always
     environment:
       QUERY_DEFAULTS_LIMIT: 25
@@ -53,17 +43,15 @@ services:
       - dify-network
 
   dify-api:
-    image: langgenius/dify-api:latest
+    image: langgenius/dify-api:1.8.0
     restart: always
     depends_on:
       - redis
       - postgres
-      - squid
       - weaviate
     environment:
       DATABASE_URL: postgresql://dify:dify@postgres:5432/dify
       REDIS_URL: redis://redis:6379/0
-      SQUID_PROXY: http://squid:3128
       JWT_SECRET: your_jwt_secret_key
       WEAVIATE_ENDPOINT: http://weaviate:8080
     ports:
@@ -72,25 +60,19 @@ services:
       - dify-network
 
   dify-web:
-    image: langgenius/dify-web:latest
+    image: langgenius/dify-web:1.8.0
     restart: always
     depends_on:
       - dify-api
     environment:
       API_BASE_URL: http://dify-api:8000
     ports:
-      - "80:80"
-    networks:
-      - dify-network
-
-  busybox:
-    image: busybox:1.38
-    restart: always
+      - "3000:3000"
     networks:
       - dify-network
 
   dify-sandbox:
-    image: langgenius/dify-sandbox:0.2.12
+    image: langgenius/dify-sandbox:0.3.15
     restart: always
     depends_on:
       - redis
@@ -100,12 +82,11 @@ services:
       GIN_MODE: release
       WORKER_TIMEOUT: 15
       ENABLE_NETWORK: "true"
-      HTTP_PROXY: http://squid:3128
     networks:
       - dify-network
 
   dify-plugin-daemon:
-    image: langgenius/dify-plugin-daemon:latest
+    image: langgenius/dify-plugin-daemon:1.8.0
     restart: always
     depends_on:
       - dify-api

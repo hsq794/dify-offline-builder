@@ -85,17 +85,6 @@ services:
     networks:
       - dify-network
 
-  dify-plugin-daemon:
-    image: langgenius/dify-plugin-daemon:0.0.0
-    restart: always
-    depends_on:
-      - dify-api
-      - redis
-    environment:
-      API_BASE_URL: http://dify-api:8000
-    networks:
-      - dify-network
-
 networks:
   dify-network:
     driver: bridge

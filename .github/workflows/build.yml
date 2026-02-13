@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Pull Dify v1.1.0 images
+      - name: Pull Docker images
         run: |
           echo "🔄 Pulling Dify v1.1.0 images..."
           docker pull redis:7-alpine
@@ -22,7 +22,6 @@ jobs:
           docker pull langgenius/dify-sandbox:0.2.12
           docker pull langgenius/dify-plugin-daemon:latest
           docker pull semitechnologies/weaviate:1.19.0
-          echo "✅ All images pulled."
 
       - name: Save images as tar
         run: |
@@ -37,145 +36,11 @@ jobs:
           docker save langgenius/dify-plugin-daemon:latest -o dify-offline/images/dify-plugin-daemon.tar
           docker save semitechnologies/weaviate:1.19.0 -o dify-offline/images/weaviate.tar
 
-      - name: Create docker-compose.yaml
+      - name: Copy config files from repo
         run: |
           mkdir -p dify-offline
-          cat > dify-offline/docker-compose.yaml << 'EOF'
-version: '3.8'
-
-services:
-  redis:
-    image: redis:7-alpine
-    restart: always
-    command: redis-server --requirepass yourpassword
-    environment:
-      REDIS_PASSWORD: yourpassword
-    ports:
-      - "6379:6379"
-    networks:
-      - dify-network
-
-  postgres:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_DB: dify
-      POSTGRES_USER: dify
-      POSTGRES_PASSWORD: yourpassword
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - dify-network
-
-  squid:
-    image: ubuntu/squid:latest
-    restart: always
-    ports:
-      - "3128:3128"
-    volumes:
-      - ./data/squid:/etc/squid
-    networks:
-      - dify-network
-
-  weaviate:
-    image: semitechnologies/weaviate:1.19.0
-    restart: always
-    environment:
-      QUERY_DEFAULTS_LIMIT: 25
-      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
-      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
-      DEFAULT_VECTORIZER_MODULE: "none"
-      CLUSTER_HOSTNAME: "node1"
-    volumes:
-      - ./data/weaviate:/var/lib/weaviate
-    ports:
-      - "8080:8080"
-    networks:
-      - dify-network
-
-  dify-api:
-    image: langgenius/dify-api:v1.1.0
-    restart: always
-    depends_on:
-      - redis
-      - postgres
-      - squid
-      - weaviate
-    environment:
-      DATABASE_URL: postgresql://dify:dify@postgres:5432/dify
-      REDIS_URL: redis://redis:6379/0
-      SQUID_PROXY: http://squid:3128
-      JWT_SECRET: your_jwt_secret_key
-      WEAVIATE_ENDPOINT: http://weaviate:8080
-    ports:
-      - "8000:8000"
-    networks:
-      - dify-network
-
-  dify-web:
-    image: langgenius/dify-web:v1.1.0
-    restart: always
-    depends_on:
-      - dify-api
-    environment:
-      API_BASE_URL: http://dify-api:8000
-    ports:
-      - "80:80"
-    networks:
-      - dify-network
-
-  busybox:
-    image: busybox:1.39
-    restart: always
-    networks:
-      - dify-network
-
-  dify-sandbox:
-    image: langgenius/dify-sandbox:0.2.12
-    restart: always
-    depends_on:
-      - redis
-      - postgres
-    environment:
-      API_KEY: dify-sandbox
-      GIN_MODE: release
-      WORKER_TIMEOUT: 15
-      ENABLE_NETWORK: "true"
-      HTTP_PROXY: http://squid:3128
-    networks:
-      - dify-network
-
-  dify-plugin-daemon:
-    image: langgenius/dify-plugin-daemon:latest
-    restart: always
-    depends_on:
-      - dify-api
-      - redis
-    environment:
-      API_BASE_URL: http://dify-api:8000
-    networks:
-      - dify-network
-
-networks:
-  dify-network:
-    driver: bridge
-EOF
-
-      - name: Create load-images.sh
-        run: |
-          cat > dify-offline/load-images.sh << 'EOF'
-#!/bin/bash
-set -e
-echo "Loading Dify offline Docker images..."
-cd "$(dirname "$0")"
-for img in images/*.tar; do
-  [ -f "$img" ] && echo "📦 Loading $img..." && docker load -i "$img"
-done
-echo "✅ All images loaded!"
-echo "👉 Run: docker-compose up -d"
-EOF
+          cp assets/docker-compose.yaml dify-offline/
+          cp assets/load-images.sh dify-offline/
           chmod +x dify-offline/load-images.sh
 
       - name: Create ZIP package

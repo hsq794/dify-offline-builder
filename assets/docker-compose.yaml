@@ -53,7 +53,7 @@ services:
       - dify-network
 
   dify-api:
-    image: langgenius/dify-api:v1.1.0
+    image: langgenius/dify-api:v1.0.0
     restart: always
     depends_on:
       - redis
@@ -72,7 +72,7 @@ services:
       - dify-network
 
   dify-web:
-    image: langgenius/dify-web:v1.1.0
+    image: langgenius/dify-web:v1.0.0
     restart: always
     depends_on:
       - dify-api

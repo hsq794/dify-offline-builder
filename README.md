@@ -1,8 +1,13 @@
-# dify-offline-builder
-echo "# dify-offline-builder" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/hsq794/dify-offline-builder.git
-git push -u origin main
+# Dify Offline Builder
+
+一键生成 Dify 离线部署包。
+
+## 使用方法
+
+1. 进入 **Actions** 页面
+2. 点击 **Run workflow**
+3. 下载生成的 `dify-offline-package`
+4. 在内网机器解压并运行：
+   ```bash
+   ./load-images.sh
+   docker-compose up -d

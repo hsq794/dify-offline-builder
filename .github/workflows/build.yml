@@ -10,14 +10,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Pull Dify v1.0.0 images
+      - name: Pull Dify latest images
         run: |
-          echo "🔄 Pulling Dify v1.0.0 images..."
+          echo "🔄 Pulling Dify latest images..."
           docker pull redis:7-alpine
           docker pull postgres:15
           docker pull ubuntu/squid:latest
-          docker pull langgenius/dify-api:v1.0.0
-          docker pull langgenius/dify-web:v1.0.0
+          docker pull langgenius/dify-api:latest
+          docker pull langgenius/dify-web:latest
           docker pull busybox:1.39
           docker pull langgenius/dify-sandbox:0.2.12
           docker pull langgenius/dify-plugin-daemon:latest
@@ -30,8 +30,8 @@ jobs:
           docker save redis:7-alpine -o dify-offline/images/redis.tar
           docker save postgres:15 -o dify-offline/images/postgres.tar
           docker save ubuntu/squid:latest -o dify-offline/images/squid.tar
-          docker save langgenius/dify-api:v1.0.0 -o dify-offline/images/dify-api.tar
-          docker save langgenius/dify-web:v1.0.0 -o dify-offline/images/dify-web.tar
+          docker save langgenius/dify-api:latest -o dify-offline/images/dify-api.tar
+          docker save langgenius/dify-web:latest -o dify-offline/images/dify-web.tar
           docker save busybox:1.39 -o dify-offline/images/busybox.tar
           docker save langgenius/dify-sandbox:0.2.12 -o dify-offline/images/dify-sandbox.tar
           docker save langgenius/dify-plugin-daemon:latest -o dify-offline/images/dify-plugin-daemon.tar

@@ -19,7 +19,7 @@ jobs:
           docker pull langgenius/dify-api:1.8.0
           docker pull langgenius/dify-web:1.8.0
           docker pull langgenius/dify-sandbox:latest
-          docker pull langgenius/dify-plugin-daemon:1.8.0
+          docker pull langgenius/dify-plugin-daemon:latest
           echo "✅ All images pulled."
 
       - name: Save images as tar
@@ -31,7 +31,7 @@ jobs:
           docker save langgenius/dify-api:1.8.0 -o dify-offline/images/dify-api.tar
           docker save langgenius/dify-web:1.8.0 -o dify-offline/images/dify-web.tar
           docker save langgenius/dify-sandbox:latest -o dify-offline/images/dify-sandbox.tar
-          docker save langgenius/dify-plugin-daemon:1.8.0 -o dify-offline/images/dify-plugin-daemon.tar
+          docker save langgenius/dify-plugin-daemon:latest -o dify-offline/images/dify-plugin-daemon.tar
 
       - name: Copy config files from repo
         run: |

@@ -86,7 +86,7 @@ services:
       - dify-network
 
   dify-plugin-daemon:
-    image: langgenius/dify-plugin-daemon:0.1.0
+    image: langgenius/dify-plugin-daemon:0.0.1
     restart: always
     depends_on:
       - dify-api

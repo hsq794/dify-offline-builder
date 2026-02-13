@@ -84,7 +84,7 @@ services:
       - dify-network
 
   busybox:
-    image: busybox:1.39
+    image: busybox:1.38
     restart: always
     networks:
       - dify-network

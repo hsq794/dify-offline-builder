@@ -18,7 +18,7 @@ jobs:
           docker pull semitechnologies/weaviate:1.23.5
           docker pull langgenius/dify-api:1.8.0
           docker pull langgenius/dify-web:1.8.0
-          docker pull langgenius/dify-sandbox:0.3.15
+          docker pull langgenius/dify-sandbox:latest
           docker pull langgenius/dify-plugin-daemon:1.8.0
           echo "✅ All images pulled."
 
@@ -30,7 +30,7 @@ jobs:
           docker save semitechnologies/weaviate:1.23.5 -o dify-offline/images/weaviate.tar
           docker save langgenius/dify-api:1.8.0 -o dify-offline/images/dify-api.tar
           docker save langgenius/dify-web:1.8.0 -o dify-offline/images/dify-web.tar
-          docker save langgenius/dify-sandbox:0.3.15 -o dify-offline/images/dify-sandbox.tar
+          docker save langgenius/dify-sandbox:latest -o dify-offline/images/dify-sandbox.tar
           docker save langgenius/dify-plugin-daemon:1.8.0 -o dify-offline/images/dify-plugin-daemon.tar
 
       - name: Copy config files from repo
